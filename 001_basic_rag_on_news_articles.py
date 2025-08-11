@@ -1,10 +1,11 @@
 from openai import OpenAI
+# import openai
 import chromadb
 from chromadb.utils import embedding_functions
 from dotenv import load_dotenv
 import os
 import sys
-
+# sys.exit(0)
 
 # functions to load text documents from a directory 
 def load_text_documents(data_dir_path):
@@ -39,7 +40,9 @@ def create_chunks_from_documents(documents, chunk_size, chunk_overlap):
 
 def get_openai_embeddings(chunked_documents):
     for chunk in chunked_documents:
-        response = openai_client.embeddings.create(input=chunk["text"], model=EMBEDDING_MODEL_NAME, dimensions=786)
+        response = openai_client.embeddings.create(
+            input=chunk["text"], model=EMBEDDING_MODEL_NAME, dimensions=786
+        )
         chunk["embedding"] = response.data[0].embedding
     return chunked_documents
 
@@ -109,7 +112,10 @@ if __name__ == "__main__":
 
     # creating openai client and embedding function
     openai_client = OpenAI(api_key=OPENAI_API_KEY)
-    ef = embedding_functions.OpenAIEmbeddingFunction(api_key=OPENAI_API_KEY, model_name=EMBEDDING_MODEL_NAME)
+    ef = embedding_functions.OpenAIEmbeddingFunction(
+        api_key=OPENAI_API_KEY, model_name=EMBEDDING_MODEL_NAME,
+        dimensions=786,  # Set dimensions for the embedding model
+    )
 
     # Initializing chroma client 
     chroma_client = chromadb.PersistentClient(path=CHROMADB_PATH)
